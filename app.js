@@ -7,7 +7,19 @@ var bodyParser = require('body-parser');
 var i18n = require('i18n');
 
 var affiliate = require('./routes/rest/affiliate');
+var mysql=require('mysql');
 
+var dbConfig=
+{
+  host:'10.253.2.53',
+  port: 3306,
+  user: 'openapi',
+  password:'!api!',
+  database:'openapi'
+};
+
+
+global.dbcon=mysql.createConnection(dbConfig);
 
 i18n.configure({
   locales: ['en', 'ko'],
