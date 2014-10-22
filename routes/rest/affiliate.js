@@ -3,14 +3,12 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  
-	res.json({ message: 'hooray! welcome to our api!' });	
 
-
-
-
-
-
+	var query = dbcon.query('select * from api_key limit 2',function(err,rows){
+        console.log(rows);
+        res.json(rows);
+    });
+	//res.json({ message: 'hooray! welcome to our api!' });
 });
 
 //Getting the list of vm
@@ -25,12 +23,6 @@ router.get('/vmlist/:account/:domainid',function(req,res){
 
   		}
 	})
-
-
-
-
-
-
 });
 
 
@@ -41,11 +33,8 @@ router.get('/vmstart/:vmid',function(req,res){
   		if (!error && response.statusCode == 200) {
     		console.log(body) ;// Print the body of response.
     		res.json(body);
-
   		}
 	})
-
-
 });
 
 router.get('/vmstop/:vmid',function(req,res){
@@ -55,15 +44,9 @@ router.get('/vmstop/:vmid',function(req,res){
   		if (!error && response.statusCode == 200) {
     		console.log(body) ;// Print the body of response.
     		res.json(body);
-
   		}
 	})
-
-
 });
-
-
-
 
 router.get('/vmdestroy/:vmid',function(req,res){
 	var requrl="http://172.27.101.98:7979/client/api?command=destroyVirtualMachine&id="+req.params.vmid+"&expunge=true&response=json";
@@ -185,11 +168,5 @@ router.get('/vmdeploy/:zoneid/:account/:domainid/:templateid/:hypervisor/:servic
 
 
 });
-
-
-
-
-
-
 
 module.exports = router;

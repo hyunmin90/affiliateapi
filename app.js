@@ -5,9 +5,20 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var i18n = require('i18n');
+var mysql = require('mysql');
+
+var dbConfig = {
+    host :'10.253.2.53',
+    port : 3306,
+    user : 'openapi',
+    password : '!api!',
+    database:'openapi'
+};
+
+global.dbcon = mysql.createConnection(dbConfig);
+handleDisconnect(global.dbcon);
 
 var affiliate = require('./routes/rest/affiliate');
-
 
 i18n.configure({
   locales: ['en', 'ko'],
@@ -32,8 +43,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(i18n.init);
 
 app.use('/rest/affiliate', affiliate);
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -66,5 +75,17 @@ app.use(function(err, req, res, next) {
     });
 });
 
+function handleDisconnect(db) {
+  db.on('error', function (error) {
+    if (!error.fatal) return;
+    if (error.code !== 'PROTOCOL_CONNECTION_LOST') throw err;
+    console.error('> Re-connecting lost MySQL connection: ' + error.stack);
+
+    global.dbcon = mysql.createConnection(dbConfig);
+    handleDisconnect(global.dbcon);
+    global.dbcon.connect();
+    console.log("DB Reconnect");
+  });
+}
 
 module.exports = app;
