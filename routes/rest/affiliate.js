@@ -4,10 +4,10 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res) {
   
-	res.json({ message: '잘못된 접근입니다.' });	
-
-
-
+	var query = dbcon.query('select * from api_affiliates LIMIT 0,1000',function(err,rows){
+        console.log(rows);
+        res.json(rows);
+    });
 
 });
 
