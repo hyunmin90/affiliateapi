@@ -1,0 +1,8 @@
+{
+  "apibook": {
+    "apiBaseUrl": "http://apibook.daum.net/rest"
+  },
+  "developers": {
+    "homeUrl": "http://developers.daum.net/"
+  }
+}

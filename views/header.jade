@@ -1,0 +1,20 @@
+h1.sr-only Daum Developers
+header#daumHead.head_dev
+  nav.navbar.navbar-inverse(role='navigation')
+    .container-fluid
+      .navbar-header
+        button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#daumGnb')
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand.tit_dev(href='/') Daum Developers
+      #daumGnb.collapse.navbar-collapse
+        h2.sr-only Daum Developers 메인 메뉴
+        ul.nav.navbar-nav
+          li.active
+            a(href='/console') 콘솔
+          li
+            a(href='/services') 서비스
+          li
+            a(href='/community') 커뮤니티
