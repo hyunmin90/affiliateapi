@@ -4,29 +4,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res) {
   
-	res.json({ message: 'hooray! welcome to our api!' });	
-
-
-
-
-
-
-});
-
-//Getting the list of vm
-router.get('/vmlist/:account/:domainid',function(req,res){
-	var requrl ="http://172.27.101.98:7979/client/api?command=listVirtualMachines&response=json&account="+req.params.account+"&domain="+req.params.domainid+"&listAll=true";
-
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
-
-  		}
-	})
-
-
+	res.json({ message: '잘못된 접근입니다.' });	
 
 
 
@@ -34,113 +12,18 @@ router.get('/vmlist/:account/:domainid',function(req,res){
 });
 
 
-router.get('/vmstart/:vmid',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=startVirtualMachine&id="+req.params.vmid+"&response=json";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
 
-  		}
-	})
+//제휴 회사 및 담당자 정보 추가
+router.get('/company',function(req,res){
+var userId= req.query.userId;	
+var contactName= req.query.contactName;
+var contactLevel= req.query.contactLevel;
+var contactEmail= req.query.contactEmail;
+var contactPhone= req.query.contactPhone;
 
 
-});
-
-router.get('/vmstop/:vmid',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=stopVirtualMachine&id="+req.params.vmid+"&response=json";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
-
-  		}
-	})
-
-
-});
-
-
-
-
-router.get('/vmdestroy/:vmid',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=destroyVirtualMachine&id="+req.params.vmid+"&expunge=true&response=json";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
-
-  		}
-	})
-
-
-});
-
-router.get('/templateslist',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=listTemplates&response=json&listAll=true&templatefilter=all&account=admin";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body.listtemplatesresponse.count) ;// Print the body of response.
-    		
-    		var count =body.listtemplatesresponse.count;
-    		var jsonret = [];
-    		for(i=0;i<count;i++){
-    			jsonret[i]=({id:body.listtemplatesresponse.template[i].id,name:body.listtemplatesresponse.template[i].name,ostypename:body.listtemplatesresponse.template[i].ostypename});
-    		}
-    		console.log(jsonret);
-    		res.send(jsonret);
-  		}
-	})
-
-
-});
-
-router.get('/vmstatus/:jobid',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=queryAsyncJobResult&jobid="+req.params.jobid+"&response=json";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
-
-  		}
-	})
-
-
-});
-
-
-router.get('/accountinfo/:vmname',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=listAccounts&listAll=true&name="+req.params.vmname+"&response=json";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
-
-  		}
-	})
-
-
-});
-
-
-
-
-router.get('/serviceofferinglist',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=listServiceOffering&listAll=true&issystem=false&response=json";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
-
-  		}
-	})
+//ON SUCCESS OF SETTING COMPANY send 1
+res.json({"success": "1"});
 
 
 });
@@ -149,45 +32,70 @@ router.get('/serviceofferinglist',function(req,res){
 
 
 
-router.get('/listvolumes/:account/:domainid',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=listVolumes&account="+req.params.account+"&domainid="+req.params.domainid+"&response=json";
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
+//제휴기능 신청 목록
+router.get('/:userId/feature',function(req,res){
+var userId = req.params.userId;	
 
-  		}
-	})
+
+res.json({"app": app, "feature":feature, "featureState":featureState });
 
 
 });
 
 
 
-router.get('/vmdeploy/:zoneid/:account/:domainid/:templateid/:hypervisor/:serviceofferingid/:diskofferingid/:vmname',function(req,res){
-	var requrl="http://172.27.101.98:7979/client/api?command=deployVirtualMachine&response=json&zoneid="+req.params.zoneid+
-	"&account="+req.params.account+
-	"&domainid="+req.params.domainid+
-	"&templateid="+req.params.templateid+
-	"&hypervisor="+req.params.hypervisor+
-	"&serviceofferingid="+req.params.serviceofferingid+
-	"&diskofferingid="+req.params.diskofferingid+
-	"&name="+req.params.vmname;
-	var request = require('request');
-	request({url:requrl,json: true}, function (error, response, body) {
-  		if (!error && response.statusCode == 200) {
-    		console.log(body) ;// Print the body of response.
-    		res.json(body);
 
-  		}
-	})
+
+//제휴기능 신청
+router.get('/affiliate/:userId/feature/:featureId',function(req,res){
+var userId = req.params.userId;	
+var featureId = req.params.featureId;
+var reason=req.query.reason;
+
+
+
+res.json({"app": app, "feature":feature, "featureState":featureState });
+
+});
+
+
+
+
+
+
+//제휴관련 대화 조회(최근 30개만 보임)
+router.get('/:userId/chat',function(req,res){
+var userId = req.params.userId;	
+
+
+res.json({"Sender": sender, "message":message, "messageType":messageType, "created":created });
 
 
 });
 
 
 
+
+
+//제휴관련 대화 전송
+router.get('/chat',function(req,res){
+var userId = req.query.userId;	
+var message = req.query.message;
+var attachFile=req.query.attachFile;
+	
+res.json({"Sender": sender, "message":message, "messageType":messageType, "created":created });
+});
+
+
+
+
+//사용자 멤버쉽 정보
+router.get('/membership/:userId',function(req,res){
+var userId = req.params.userId;	
+
+
+res.json({"level": level, "badges":badges});
+});
 
 
 
