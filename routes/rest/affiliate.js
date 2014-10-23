@@ -87,17 +87,25 @@ res.json({"Sender": sender, "message":message, "messageType":messageType, "creat
 });
 
 
-
-
 //사용자 멤버쉽 정보
 router.get('/membership/:userId',function(req,res){
-var userId = req.params.userId;	
-
-
-res.json({"level": level, "badges":badges});
+	var userId = req.params.userId;
+	var level, badges;
+	
+	var query = dbcon.query('select grade, id from member_members where userid = ?', [userId], function(err,rows){
+        console.log("grade : "+rows[0].grade);
+        console.log("id : "+rows[0].id);
+        level = rows[0].grade;
+        query = dbcon.query('select badge_id from member_badge_grant where member_id = ?', [rows[0].id], function(err,rows){
+	        console.log(rows);
+	        rows.forEach(function(element, index, array){
+	        	badges = badges + rows[index].badge_id;
+	        	console.log(rows[index].badge_id);
+	        });
+	        //console.log(badges);
+	        res.json({"level": level,"badges":badges});
+    	});
+    });
 });
-
-
-
 
 module.exports = router;
