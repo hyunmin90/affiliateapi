@@ -8,10 +8,9 @@ var i18n = require('i18n');
 var mysql = require('mysql');
 
 var affiliate = require('./routes/rest/affiliate');
-var mysql=require('mysql');
+var mysql = require('mysql');
 
-var dbConfig=
-{
+var dbConfig = {
   host:'10.253.2.53',
   port: 3306,
   user: 'openapi',
@@ -19,7 +18,7 @@ var dbConfig=
   database:'openapi'
 };
 
-global.dbcon=mysql.createConnection(dbConfig);
+global.dbcon = mysql.createConnection(dbConfig);
 
 i18n.configure({
   locales: ['en', 'ko'],
@@ -53,7 +52,6 @@ app.use(function(req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {

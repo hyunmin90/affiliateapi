@@ -68,76 +68,87 @@ var userId = req.params.userId;
 
 
 
-//제휴기능 신청
-router.get('/affiliate/:userId/feature/:featureId',function(req,res){
-var userId = req.params.userId;	
-var featureId = req.params.featureId;
-var reason=req.query.reason;
+/*
+#제휴기능 신청
+#doamin : manage.daumtools.com
+#path : POST /rest/affiliate/affiliate/{userId}/feature/{featureId}?reason={reason}
+#req : userId, featureId, reason
+#res : list[app, feature, featureState]
+*/
+router.post('/affiliate/:userId/feature/:featureId',function(req,res){
+    var userId = req.body.userId;	
+    var featureId = req.body.featureId;
+    var reason=req.body.reason;
 
+    var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company_contact_email,company_contact_phone,company_name) VALUES(?,?,?,?)',post, function(err,rows){
+            console.log(rows);
+            console.log(err);
+            console.log(query);
+            res.json(rows);
+        });
+    res.json({"app": app, "feature":feature, "featureState":featureState });
+});
 
+/*
+#제휴관련 대화 조회(최근 30개만 보임)
+#doamin : manage.daumtools.com
+#path : GET /rest/affiliate/{userId}/chat
+#req : userId
+#res : list[Sender, message, messageType, created]
+*/
 
-
-var post=[userId,featureId,reason];
-
-var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company_contact_email,company_contact_phone,company_name) VALUES(?,?,?,?)',post, function(err,rows){
+//TODO : Sender 가 누구를 말하는지 messageType과 차이점? 
+router.get('/:userId/chat',function(req,res){
+    var userId = req.params.userId;
+    console.log(userId);
+    var query = dbcon.query('select comment, level, updatedate from api_affiliates_comment where userid = ? limit 30',[userId] ,function(err,rows){
         console.log(rows);
-        console.log(err);
-        console.log(query);
-        res.json(rows);
+        res.json({"Sender": userId, "data" : rows});
+    });
+});
+
+/*
+#제휴관련 대화 전송
+#doamin : manage.daumtools.com
+#path : POST /rest/affiliate/chat?userId={userId}&message={message}&attachFile={attachFile}
+#req : userId, message, attachFile
+#res : list[Sender, message, messageType, created]
+*/
+router.post('/chat',function(req,res){
+    var userId = req.body.userId;
+    var message = req.body.message;
+    var attachFile = req.body.attachFile;
+    var query = dbcon.query('insert userid, message, attachFile from api_affiliates_comment', function(err,rows){
+        query = dbcon.query('select Sender, message, messageType, created from api_affiliates_comment where member_id = ? order by badge_id;', function(err,rows){
+            res.json({"Sender": rows[0].Sender, "message": rows[0].message,"messageType": rows[0].messageType,"created": rows[0].created});
+        });
     });
 
-
-
-
-res.json({"app": app, "feature":feature, "featureState":featureState });
-
+    res.json({"Sender": sender, "message":message, "messageType":messageType, "created":created });
 });
 
-
-
-
-
-
-//제휴관련 대화 조회(최근 30개만 보임)
-router.get('/:userId/chat',function(req,res){
-var userId = req.params.userId;	
-
-
-res.json({"Sender": sender, "message":message, "messageType":messageType, "created":created });
-
-
-});
-
-
-
-
-
-//제휴관련 대화 전송
-router.get('/chat',function(req,res){
-var userId = req.query.userId;	
-var message = req.query.message;
-var attachFile=req.query.attachFile;
-	
-res.json({"Sender": sender, "message":message, "messageType":messageType, "created":created });
-});
-
-
-//사용자 멤버쉽 정보
+/*
+#사용자 멤버쉽 정보
+#doamin : manage.daumtools.com
+#path : GET /rest/membership/{userId}
+#req : userId
+#res : level, badges
+*/
 router.get('/membership/:userId',function(req,res){
 	var userId = req.params.userId;
-	var level, badges;
-	
+    var badges = new Array();
+	var level;
 	var query = dbcon.query('select grade, id from member_members where userid = ?', [userId], function(err,rows){
         console.log("grade : "+rows[0].grade);
         console.log("id : "+rows[0].id);
         level = rows[0].grade;
-        query = dbcon.query('select badge_id from member_badge_grant where member_id = ?', [rows[0].id], function(err,rows){
+        query = dbcon.query('select badge_id from member_badge_grant where member_id = ? order by badge_id;', [rows[0].id], function(err,rows){
 	        console.log(rows);
 	        rows.forEach(function(element, index, array){
-	        	badges = badges + rows[index].badge_id;
+	        	badges.push(rows[index].badge_id);
 	        	console.log(rows[index].badge_id);
 	        });
-	        //console.log(badges);
+	        console.log(badges);
 	        res.json({"level": level,"badges":badges});
     	});
     });
