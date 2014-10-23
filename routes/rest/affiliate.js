@@ -76,9 +76,10 @@ var userId = req.params.userId;
 #res : list[app, feature, featureState]
 */
 router.post('/affiliate/:userId/feature/:featureId',function(req,res){
-    var userId = req.body.userId;	
-    var featureId = req.body.featureId;
-    var reason=req.body.reason;
+    var userId = req.params.userId;	
+    var featureId = req.params.featureId;
+    var reason=req.query.reason;
+    var post=[userId,featureId,reason];
 
     var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company_contact_email,company_contact_phone,company_name) VALUES(?,?,?,?)',post, function(err,rows){
             console.log(rows);
@@ -96,7 +97,6 @@ router.post('/affiliate/:userId/feature/:featureId',function(req,res){
 #req : userId
 #res : list[Sender, message, messageType, created]
 */
-
 //TODO : Sender 가 누구를 말하는지 messageType과 차이점? 
 router.get('/:userId/chat',function(req,res){
     var userId = req.params.userId;
