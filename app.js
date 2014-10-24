@@ -10,6 +10,11 @@ var mysql = require('mysql');
 var affiliate = require('./routes/rest/affiliate');
 var requestTest = require('./routes/rest/requestTest');
 
+var badge = require('./routes/membership/badge');
+var member = require('./routes/membership/member');
+
+
+
 var mysql = require('mysql');
 
 var dbConfig = {
@@ -46,6 +51,10 @@ app.use(i18n.init);
 
 app.use('/rest/affiliate', affiliate);
 app.use('/rest/requestTest', requestTest);
+
+
+app.use('/member/badge', badge);
+app.use('/member/member', member);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
