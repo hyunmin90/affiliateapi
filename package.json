@@ -22,6 +22,8 @@
     "request": "~2.44.0",
     "memory-cache": "0.0.5",
     "config": "1.2.1",
-    "mysql":"*"
+    "mysql":"*",
+    "fs-extra":"0.12.0",
+    "formidable":"1.0.15"
   }
 }

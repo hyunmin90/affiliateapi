@@ -64,19 +64,14 @@ var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company
 router.get('/:userId/feature',function(req,res){
 var userId = req.params.userId;	
 
-	var query = dbcon.query('select service_url,service_desc,status from api_affiliates where company_contact_name= ?',userId, function(err,rows){
+	var query = dbcon.query('select service_url,service_desc,status from api_affiliates where userId= ?',userId, function(err,rows){
         console.log(rows);
         res.json(rows);
     });
 
-
-
 /*res.json({"app": app, "feature":feature, "featureState":featureState });*/
 
 });
-
-
-
 
 
 /*
@@ -155,7 +150,7 @@ router.get('/membership/:userId',function(req,res){
         if(rows.length == 0){
             res.json({"Error": "No such a User" });
             return;
-        } 
+        }
         console.log("grade : "+rows[0].grade);
         console.log("id : "+rows[0].id);
         level = rows[0].grade;

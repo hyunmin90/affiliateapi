@@ -1,0 +1,8 @@
+html
+head
+    meta(charset='UTF-8')
+    title #{title}
+  body
+    form(method='post', action='http://172.16.11.2:3001/rest/affiliate/chat', enctype='multipart/form-data')
+      input(type='file', name='fileUploaded')
+      input(type='submit')
