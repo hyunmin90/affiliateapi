@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var i18n = require('i18n');
 var mysql = require('mysql');
 
+var routes = require('./routes/index');
 var affiliate = require('./routes/rest/affiliate');
 var requestTest = require('./routes/rest/requestTest');
 
@@ -44,6 +45,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(i18n.init);
 
+app.use('/', routes);
 app.use('/rest/affiliate', affiliate);
 app.use('/rest/requestTest', requestTest);
 
