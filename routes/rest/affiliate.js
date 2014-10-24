@@ -16,8 +16,13 @@ router.get('/', function(req, res) {
 });
 
 
-
-//제휴 회사 및 담당자 정보 추가
+/*
+#제휴 회사 및 담당자 정보 추가
+#doamin : manage.daumtools.com
+#path : POST /rest/affiliate/company?userid={userid}&link={link}&contactName={contactName}&contactLevel={contactLevel}&contactEmail={contactEmail}&contactPhone={contactPhone}
+#req : userId,link,contactName,contactLevel,contactEmail,contactPhone
+#res : changed company info 
+*/
 router.get('/company',function(req,res){
 
 var userid= req.query.userid;	
@@ -48,10 +53,14 @@ var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company
 });
 
 
+/*
+#제휴기능 신청 목록
+#doamin : manage.daumtools.com
+#path : POST /rest/affiliate/{userId}/feature
+#req : userId
+#res : list[app, feature, featureState]
+*/
 
-
-
-//제휴기능 신청 목록
 router.get('/:userId/feature',function(req,res){
 var userId = req.params.userId;	
 
