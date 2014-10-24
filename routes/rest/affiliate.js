@@ -142,9 +142,11 @@ router.get('/membership/:userId',function(req,res){
 	var level;
 	var query = dbcon.query('select grade, id from member_members where userid = ?', [userId], function(err,rows){
         
-        if(rows.lenght == 0) res.json({"Error": "No such a User" });
         if(err) throw err;
-       
+        if(rows.length == 0){
+            res.json({"Error": "No such a User" });
+            return;
+        } 
         console.log("grade : "+rows[0].grade);
         console.log("id : "+rows[0].id);
         level = rows[0].grade;
