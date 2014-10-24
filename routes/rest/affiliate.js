@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
+//파일 업로드를 위한 require
+var formidable = require('formidable');
+var fs =require('fs-extra')
+
 /* GET home page. */
 router.get('/', function(req, res) {
   
@@ -51,7 +55,6 @@ var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company
 router.get('/:userId/feature',function(req,res){
 var userId = req.params.userId;	
 
-
 	var query = dbcon.query('select service_url,service_desc,status from api_affiliates where company_contact_name= ?',userId, function(err,rows){
         console.log(rows);
         res.json(rows);
@@ -60,7 +63,6 @@ var userId = req.params.userId;
 
 
 /*res.json({"app": app, "feature":feature, "featureState":featureState });*/
-
 
 });
 
@@ -78,16 +80,15 @@ var userId = req.params.userId;
 router.post('/affiliate/:userId/feature/:featureId',function(req,res){
     var userId = req.params.userId;	
     var featureId = req.params.featureId;
-    var reason=req.query.reason;
+    var reason=req.body.reason;
     var post=[userId,featureId,reason];
 
     var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company_contact_email,company_contact_phone,company_name) VALUES(?,?,?,?)',post, function(err,rows){
             console.log(rows);
             console.log(err);
             console.log(query);
-            res.json(rows);
+            res.json({"app": app, "feature":feature, "featureState":featureState });
         });
-    res.json({"app": app, "feature":feature, "featureState":featureState });
 });
 
 /*
@@ -97,13 +98,13 @@ router.post('/affiliate/:userId/feature/:featureId',function(req,res){
 #req : userId
 #res : list[Sender, message, messageType, created]
 */
-//TODO : Sender 가 누구를 말하는지 messageType과 차이점? 
+//TODO : Sender - 보낸 사람,  messageType - 메세지가 시스템적인 메세지인지, 개인이 입력 메세지 인지 
 router.get('/:userId/chat',function(req,res){
     var userId = req.params.userId;
     console.log(userId);
     var query = dbcon.query('select comment, level, updatedate from api_affiliates_comment where userid = ? limit 30',[userId] ,function(err,rows){
         console.log(rows);
-        res.json({"Sender": userId, "data" : rows});
+        res.json({"userId": userId, "data" : rows});
     });
 });
 
@@ -115,16 +116,17 @@ router.get('/:userId/chat',function(req,res){
 #res : list[Sender, message, messageType, created]
 */
 router.post('/chat',function(req,res){
+
+    fileUpload(req);//병령로 수행되며, 파일저장이름은 본파일 이름과 같고 덮어쓰기 된다.
     var userId = req.body.userId;
     var message = req.body.message;
     var attachFile = req.body.attachFile;
+    console.log(userId+"/"+message+"/"+attachFile);
     var query = dbcon.query('insert userid, message, attachFile from api_affiliates_comment', function(err,rows){
         query = dbcon.query('select Sender, message, messageType, created from api_affiliates_comment where member_id = ? order by badge_id;', function(err,rows){
             res.json({"Sender": rows[0].Sender, "message": rows[0].message,"messageType": rows[0].messageType,"created": rows[0].created});
         });
     });
-
-    res.json({"Sender": sender, "message":message, "messageType":messageType, "created":created });
 });
 
 /*
@@ -139,19 +141,41 @@ router.get('/membership/:userId',function(req,res){
     var badges = new Array();
 	var level;
 	var query = dbcon.query('select grade, id from member_members where userid = ?', [userId], function(err,rows){
+        
+        if(rows.lenght == 0) res.json({"Error": "No such a User" });
+        if(err) throw err;
+       
         console.log("grade : "+rows[0].grade);
         console.log("id : "+rows[0].id);
         level = rows[0].grade;
         query = dbcon.query('select badge_id from member_badge_grant where member_id = ? order by badge_id;', [rows[0].id], function(err,rows){
-	        console.log(rows);
 	        rows.forEach(function(element, index, array){
 	        	badges.push(rows[index].badge_id);
 	        	console.log(rows[index].badge_id);
 	        });
-	        console.log(badges);
 	        res.json({"level": level,"badges":badges});
     	});
     });
 });
+
+function fileUpload(req) {
+    var form = new formidable.IncomingForm();
+    form.uploadDir = "./attachFiles";
+    form.keepExtensions = true;
+
+    form.parse(req, function(err, fields, files) {
+        console.log("file size: "+JSON.stringify(files.fileUploaded.size));
+        console.log("file path: "+JSON.stringify(files.fileUploaded.path));
+        console.log("file name: "+JSON.stringify(files.fileUploaded.name));
+        console.log("file type: "+JSON.stringify(files.fileUploaded.type));
+        console.log("astModifiedDate: "+JSON.stringify(files.fileUploaded.lastModifiedDate));
+
+        //Formidable은 파일 이름을 바꾸기 때문에, 원래의 이름으로 돌리는 작업을 아래에서 수행한다.
+        fs.rename(files.fileUploaded.path, './attachFiles/'+files.fileUploaded.name, function(err) {
+        if (err) throw err;
+        console.log('renamed complete');
+        });
+    });
+}
 
 module.exports = router;

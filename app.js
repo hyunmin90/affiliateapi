@@ -8,6 +8,8 @@ var i18n = require('i18n');
 var mysql = require('mysql');
 
 var affiliate = require('./routes/rest/affiliate');
+var requestTest = require('./routes/rest/requestTest');
+
 var mysql = require('mysql');
 
 var dbConfig = {
@@ -43,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(i18n.init);
 
 app.use('/rest/affiliate', affiliate);
+app.use('/rest/requestTest', requestTest);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
