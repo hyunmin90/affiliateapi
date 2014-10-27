@@ -14,8 +14,6 @@ var requestTest = require('./routes/rest/requestTest');
 var badge = require('./routes/membership/badge');
 var member = require('./routes/membership/member');
 
-
-
 var mysql = require('mysql');
 
 var dbConfig = {

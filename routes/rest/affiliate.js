@@ -144,7 +144,7 @@ router.get('/membership/:userId',function(req,res){
 	var userId = req.params.userId;
     var badges = new Array();
 	var level;
-	var query = dbcon.query('select grade, id from member_members where userid = ?', [userId], function(err,rows){
+	var query = dbcon.query('select grade, id from membership_members where userid = ?', [userId], function(err,rows){
         
         if(err) throw err;
         if(rows.length == 0){
@@ -154,7 +154,7 @@ router.get('/membership/:userId',function(req,res){
         console.log("grade : "+rows[0].grade);
         console.log("id : "+rows[0].id);
         level = rows[0].grade;
-        query = dbcon.query('select badge_id from member_badge_grant where member_id = ? order by badge_id;', [rows[0].id], function(err,rows){
+        query = dbcon.query('select badge_id from membership_badge_grant where member_id = ? order by badge_id;', [rows[0].id], function(err,rows){
 	        rows.forEach(function(element, index, array){
 	        	badges.push(rows[index].badge_id);
 	        	console.log(rows[index].badge_id);
