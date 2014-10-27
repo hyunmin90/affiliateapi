@@ -46,9 +46,10 @@ var query = dbcon.query('SELECT * FROM member_members JOIN member_badge_grant AS
 #res : Member Information
 */
 router.get('/grant_badge_based_api',function(req,res){
+	
 
 
-
+	res.json(test);
 });
 
 /*
@@ -70,18 +71,7 @@ var query = dbcon.query('SELECT id, name, getprocess, description, status, scarc
 
 
 });
-/*
-#Member INFO
-#doamin : manage.daumtools.com
-#path : POST /member/badge/insert_badge_form
-#req : N/A
-#res : Member Information
-*/
-router.get('/insert_badge_form',function(req,res){
 
-
-
-});
 /*
 #Member INFO
 #doamin : manage.daumtools.com
@@ -104,8 +94,6 @@ router.get('/insert_badge',function(req,res){
 router.get('/calcul_badge_scarcity',function(req,res){
 
 
-
 });
-
 
 module.exports = router;

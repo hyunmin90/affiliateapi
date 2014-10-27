@@ -1,71 +1,100 @@
-var express = require('express');
-var router = express.Router();
+(function() {
+	var express = require('express');
+	var router = express.Router();
 
-//파일 업로드를 위한 require
-var formidable = require('formidable');
-var fs =require('fs-extra');
+	router.get('/', function(req, res) {
+		res.json("welcom to Membership JSON");
+	});
 
+	/*
+	#맴버 리스트를 받아온다.
+	#doamin : manage.daumtools.com
+	#path : POST /member/member/show_member
+	#req : N/A
+	#res : Member Information
+	*/
+	router.get('/show_member',function(req,res){
 
+	var query = dbcon.query('SELECT * FROM membership_members ORDER BY createdate DESC',function(err,rows){
+		console.log(rows);
+		res.json(rows);
+		});
 
-
-/* GET home page. */
-router.get('/', function(req, res) {
-  
-
-
-});
-
-/*
-#맴버 리스트를 받아온다.
-#doamin : manage.daumtools.com
-#path : POST /member/member/show_member
-#req : N/A
-#res : Member Information
-*/
-router.get('/show_member',function(req,res){
-
-var query = dbcon.query('SELECT * FROM member_members ORDER BY createdate DESC',function(err,rows){
-	console.log(rows);
-	res.json(rows);
 	});
 
 
 
+	/*
+	#Member INFO
+	#doamin : manage.daumtools.com
+	#path : POST /member/member/calcul_point_grade
+	#req : N/A
+	#res : Member Information
+	*/
+	router.get('/calcul_point_grade',function(req,res){
 
-});
+		/*
+			$userlist = $this->model_load_model("dnaver/member_model")->show_member()->result();
+
+			    foreach($userlist as $u)
+			    {
+			      $id = $u->id;
+			      $yesterday = date("Y-m-d",strtotime("-1 days"));
+
+			      $Query = "UPDATE member_members SET point=point+
+			                      (SELECT ifnull(SUM(total),0)
+			                       FROM
+			                        (SELECT
+
+			                          (SELECT COUNT(board_id)*member_boards.weight
+			                           FROM member_board_activity
+			                           WHERE member_board_activity.board_id = member_boards.id
+			                           AND member_id = ?
+			                           AND date_format(writedate,'%Y-%m-%d') >= ?
+			                          ) as total
+
+			                         FROM member_boards
+			                        ) AS M
+			                      )
+			               WHERE id = ?";
+
+			               //duraboys 라는 회원이 게시한 글을 boardid로 나누어 가중치를 주어 계산하는 질의
+			               /*
+			              SELECT
+
+			              (SELECT COUNT(boardid)*member_boards.weight
+			                FROM member_board_activity
+			                WHERE member_board_activity.boardid = member_boards.boardid
+			                AND userid = 'duraboys'
+			              ) as total,
+			              member_boards.boardid as id
+
+			              FROM member_boards
+							*//*
+               
+
+			      $array = array($id,$yesterday,$id);
+			      $this->openapi_db->query($Query,$array);
+			    }
+		*/
+
+	});
+
+
+	/*
+	#Member INFO
+	#doamin : manage.daumtools.com
+	#path : POST /member/member/insert_from_api
+	#req : N/A
+	#res : Member Information
+	*/
+	router.get('/insert_from_api',function(req,res){
 
 
 
-/*
-#Member INFO
-#doamin : manage.daumtools.com
-#path : POST /member/member/calcul_point_grade
-#req : N/A
-#res : Member Information
-*/
-router.get('/calcul_point_grade',function(req,res){
 
 
 
-
-
-
-});
-
-
-/*
-#Member INFO
-#doamin : manage.daumtools.com
-#path : POST /member/member/insert_from_api
-#req : N/A
-#res : Member Information
-*/
-router.get('/insert_from_api',function(req,res){
-
-
-
-
-
-
-});
-module.exports = router;
+	});
+	module.exports = router;
+}).call(this);

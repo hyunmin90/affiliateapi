@@ -52,7 +52,6 @@ app.use('/', routes);
 app.use('/rest/affiliate', affiliate);
 app.use('/rest/requestTest', requestTest);
 
-
 app.use('/member/badge', badge);
 app.use('/member/member', member);
 
