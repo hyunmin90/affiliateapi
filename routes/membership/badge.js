@@ -91,8 +91,7 @@ var badge_info=[name,description,getprocess];
 
 
 
-var query = dbcon.query('INSERT INTO membership_badges(name, description, getprocess)
-              			  VALUES(?,?,?)',badge_info,function(err,rows){
+var query = dbcon.query('INSERT INTO membership_badges(name, description, getprocess) VALUES(?,?,?)',badge_info,function(err,rows){
 	console.log(rows);
 	res.json(rows);
 	});
@@ -107,18 +106,26 @@ var query = dbcon.query('INSERT INTO membership_badges(name, description, getpro
 #req : N/A
 #res : Member Information
 */
-router.get('/calcul_badge_scarcity',function(req,res){
-
-var query = dbcon.query('UPDATE membership_badges 
-  	 		  SET scarcity = (SELECT round( count(badge_id)/? * 100 ,2) FROM membership_badge_grant WHERE badge_id = ?),
-			  used = (SELECT if(count(badge_id)=0,0,1) FROM member_badge_grant WHERE badge_id = ?)
-			  WHERE id = ?',function(err,rows){
+router.get('/calcul_badge_scarcity',function(err,res){
+var count;
+var numb = dbcon.query('SELECT count(userid) as cnt FROM membership_members', function(err,rows){
 	console.log(rows);
-	res.json(rows);
+	count=rows[0].cnt;
+	console.log(count);
+
+
+var query = dbcon.query('UPDATE membership_badges SET scarcity = (SELECT round(count(2)/?*100 ,2) FROM membership_badge_grant WHERE badge_id = 2) WHERE id =2',count,function(err,rows){
+	console.log(rows);
+	console.log(err);
 	});
 	
-
 });
+	
+	
+});
+
+
+
 
 
 module.exports = router;
