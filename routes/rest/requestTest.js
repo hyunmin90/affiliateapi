@@ -48,7 +48,7 @@
 	            throw err;
 	          console.log('renamed complete');
 	        });
-	        res.json({"fileName":files.fileUploaded.name});
+	        res.jsonp({"fileName":files.fileUploaded.name});
 	    });
 	});
 	module.exports = router;

@@ -10,7 +10,7 @@ router.get('/', function(req, res) {
   
 	var query = dbcon.query('select * from api_affiliates LIMIT 0,1000',function(err,rows){
         console.log(rows);
-        res.json(rows);
+        res.jsonp(rows);
     });
 
 });
@@ -39,7 +39,7 @@ var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company
         console.log(rows);
         console.log(err);
         console.log(query);
-        res.json(rows);
+        res.jsonp(rows);
     });
 
 
@@ -47,7 +47,7 @@ var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company
 
 
 //ON SUCCESS OF SETTING COMPANY send 1
-//res.json({"success": "1"});
+//res.jsonp({"success": "1"});
 
 
 });
@@ -55,8 +55,7 @@ var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company
 
 /*
 #제휴기능 신청 목록
-#doamin : manage.daumtools.com
-#path : POST /rest/affiliate/{userId}/feature
+#doamin : manage.daumtools.comh/affiliate/{userId}/feature
 #req : userId
 #res : list[app, feature, featureState]
 */
@@ -64,12 +63,12 @@ var query = dbcon.query('INSERT INTO api_affiliates(company_contact_name,company
 router.get('/:userId/feature',function(req,res){
 var userId = req.params.userId;	
 
-	var query = dbcon.query('select service_url,service_desc,status from api_affiliates where userId= ?',userId, function(err,rows){
+	var query = dbcon.query('select company_contact_name,company_contact_email,affiliate_type,company_number,service_url,service_desc,status from api_affiliates where userId= ?',userId, function(err,rows){
         console.log(rows);
-        res.json(rows);
+        res.jsonp(rows);
     });
 
-/*res.json({"app": app, "feature":feature, "featureState":featureState });*/
+/*res.jsonp({"app": app, "feature":feature, "featureState":featureState });*/
 
 });
 
@@ -91,7 +90,7 @@ router.post('/affiliate/:userId/feature/:featureId',function(req,res){
             console.log(rows);
             console.log(err);
             console.log(query);
-            res.json({"app": app, "feature":feature, "featureState":featureState });
+            res.jsonp({"app": app, "feature":feature, "featureState":featureState });
         });
 });
 
@@ -108,7 +107,7 @@ router.get('/:userId/chat',function(req,res){
     console.log(userId);
     var query = dbcon.query('select comment, level, updatedate from api_affiliates_comment where userid = ? limit 30',[userId] ,function(err,rows){
         console.log(rows);
-        res.json({"userId": userId, "data" : rows});
+        res.jsonp({"userId": userId, "data" : rows});
     });
 });
 
@@ -128,7 +127,7 @@ router.post('/chat',function(req,res){
     console.log(userId+"/"+message+"/"+attachFile);
     var query = dbcon.query('insert userid, message, attachFile from api_affiliates_comment', function(err,rows){
         query = dbcon.query('select Sender, message, messageType, created from api_affiliates_comment where member_id = ? order by badge_id;', function(err,rows){
-            res.json({"Sender": rows[0].Sender, "message": rows[0].message,"messageType": rows[0].messageType,"created": rows[0].created});
+            res.jsonp({"Sender": rows[0].Sender, "message": rows[0].message,"messageType": rows[0].messageType,"created": rows[0].created});
         });
     });
 });
@@ -148,7 +147,7 @@ router.get('/membership/:userId',function(req,res){
         
         if(err) throw err;
         if(rows.length == 0){
-            res.json({"Error": "No such a User" });
+            res.jsonp({"Error": "No such a User" });
             return;
         }
         console.log("grade : "+rows[0].grade);
@@ -159,7 +158,7 @@ router.get('/membership/:userId',function(req,res){
 	        	badges.push(rows[index].badge_id);
 	        	console.log(rows[index].badge_id);
 	        });
-	        res.json({"level": level,"badges":badges});
+	        res.jsonp({"level": level,"badges":badges});
     	});
     });
 });
